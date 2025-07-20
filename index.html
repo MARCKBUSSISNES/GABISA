@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Ventas - Boutique Femenina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fuente femenina bonita -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(120deg, #f8e6f7 0%, #ffe5ec 100%);
+      font-family: 'Quicksand', 'Poppins', Arial, sans-serif;
+      margin: 0;
+      color: #65336e;
+    }
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      background: #fff8fc;
+      padding: 2rem 2.5rem 1.5rem 2.5rem;
+      border-radius: 1.8rem;
+      box-shadow: 0 8px 32px rgba(203,96,182,0.13);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 1.7rem;
+    }
+    h1 {
+      font-size: 2.4rem;
+      color: #ff5db1;
+      font-family: 'Pacifico', cursive, sans-serif;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+    h2 {
+      color: #b957a4;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+      margin-top: 1.1rem;
+      font-size: 1.3rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0 1rem 0;
+      border: 1px solid #f3a6da;
+      border-radius: 1.1rem;
+      font-size: 1rem;
+      background: #fdf6fa;
+    }
+    input[type=number]::-webkit-inner-spin-button { opacity: .5; }
+    .boton-femenino {
+      background: linear-gradient(90deg,#ff89c2 0%, #fda1df 100%);
+      color: #fff;
+      border: none;
+      border-radius: 1.3rem;
+      padding: 0.7rem 1.3rem;
+      font-weight: bold;
+      font-size: 1.07rem;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,97,168,.13);
+      transition: background 0.2s;
+    }
+    .boton-femenino:hover {
+      background: linear-gradient(90deg,#fda1df 0%, #ff89c2 100%);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ffd6eb;
+      padding: 0.5rem 0.5rem;
+      text-align: center;
+      font-size: 0.97rem;
+    }
+    th {
+      background: #ffe1f4;
+      color: #b55da3;
+    }
+    #cierreResultado {
+      margin: 1.2rem 0 0.6rem 0;
+      padding: 1rem;
+      background: #ffeaf9;
+      border-radius: 1.2rem;
+      color: #bf69aa;
+      font-size: 1.12rem;
+      display: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      color: #b37c9b;
+      font-size: 1rem;
+    }
+    ::-webkit-input-placeholder { color:#e9a4c2;}
+    ::-moz-placeholder { color:#e9a4c2;}
+    :-ms-input-placeholder { color:#e9a4c2;}
+    ::placeholder { color:#e9a4c2;}
+    @media (max-width: 700px) {
+      .container { padding: 1.2rem 0.6rem; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mi Boutique Chic 💖</h1>
+    </header>
+
+    <form id="ventaForm">
+      <h2>Registrar Nueva Venta</h2>
+      <input type="text" id="prenda" placeholder="Prenda vendida" required>
+      <input type="number" id="cantidad" min="1" placeholder="Cantidad" required>
+      <input type="number" id="precio" min="0" step="0.01" placeholder="Precio unitario (Q)" required>
+      <select id="metodo" required>
+        <option value="" disabled selected>Método de pago</option>
+        <option>Efectivo</option>
+        <option>Tarjeta</option>
+        <option>Transferencia</option>
+      </select>
+      <button type="submit" class="boton-femenino">Registrar</button>
+    </form>
+
+    <section id="ventasHistorial">
+      <h2>Historial de Ventas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Prenda</th><th>Cant.</th><th>Precio</th><th>Método</th><th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="ventasTabla"></tbody>
+      </table>
+    </section>
+
+    <section id="cierreCaja">
+      <h2>Cierre de Caja</h2>
+      <form id="cierreForm">
+        <input type="number" step="0.01" min="0" id="recEfectivo" placeholder="Recibido en Efectivo" required>
+        <input type="number" step="0.01" min="0" id="recTarjeta" placeholder="Recibido en Tarjeta" required>
+        <input type="number" step="0.01" min="0" id="recTransferencia" placeholder="Recibido en Transferencia" required>
+        <button type="submit" class="boton-femenino">Generar Ticket Cierre</button>
+      </form>
+      <div id="cierreResultado"></div>
+      <button id="descargarPDF" class="boton-femenino" style="display:none;">Descargar Ticket PDF</button>
+      <button id="enviarWhatsApp" class="boton-femenino" style="display:none;">Compartir por WhatsApp</button>
+    </section>
+  </div>
+  <footer>
+    <p>Creado para chicas elegantes 💅 | Powered by ChatGPT | Guatemala 2025</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // --------------- REGISTRO Y VISUALIZACION DE VENTAS ---------------
+    let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
+    const ventasTabla = document.getElementById("ventasTabla");
+
+    function renderVentas() {
+      ventasTabla.innerHTML = "";
+      ventas.forEach(v => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${v.prenda}</td>
+          <td>${v.cantidad}</td>
+          <td>Q${parseFloat(v.precio).toFixed(2)}</td>
+          <td>${v.metodo}</td>
+          <td>Q${(v.cantidad * v.precio).toFixed(2)}</td>
+        `;
+        ventasTabla.appendChild(tr);
+      });
+    }
+    renderVentas();
+
+    // --------------- AGREGAR VENTA ---------------
+    document.getElementById("ventaForm").onsubmit = e => {
+      e.preventDefault();
+      const prenda = document.getElementById("prenda").value;
+      const cantidad = parseInt(document.getElementById("cantidad").value);
+      const precio = parseFloat(document.getElementById("precio").value);
+      const metodo = document.getElementById("metodo").value;
+      ventas.push({ prenda, cantidad, precio, metodo });
+      localStorage.setItem("ventas", JSON.stringify(ventas));
+      renderVentas();
+      e.target.reset();
+    };
+
+    // --------------- CIERRE DE CAJA Y CUADRE ---------------
+    document.getElementById("cierreForm").onsubmit = e => {
+      e.preventDefault();
+
+      // Sumar ventas por método
+      let sumEfectivo = 0, sumTarjeta = 0, sumTransf = 0;
+      ventas.forEach(v => {
+        const total = v.cantidad * v.precio;
+        if (v.metodo === "Efectivo") sumEfectivo += total;
+        if (v.metodo === "Tarjeta") sumTarjeta += total;
+        if (v.metodo === "Transferencia") sumTransf += total;
+      });
+
+      // Recibidos
+      const recEfectivo = parseFloat(document.getElementById("recEfectivo").value) || 0;
+      const recTarjeta = parseFloat(document.getElementById("recTarjeta").value) || 0;
+      const recTransf = parseFloat(document.getElementById("recTransferencia").value) || 0;
+
+      // Diferencias
+      const difEfectivo = recEfectivo - sumEfectivo;
+      const difTarjeta = recTarjeta - sumTarjeta;
+      const difTransf = recTransf - sumTransf;
+      const totalVentas = sumEfectivo + sumTarjeta + sumTransf;
+
+      // Resultado
+      let html = `
+        <strong>Total ventas: Q${totalVentas.toFixed(2)}</strong><br>
+        <u>Por método:</u><br>
+        Efectivo: Vendido Q${sumEfectivo.toFixed(2)} / Recibido Q${recEfectivo.toFixed(2)} <b>${difEfectivo ? "<span style='color:red;'>("+(difEfectivo>0?"+":"")+difEfectivo.toFixed(2)+")</span>":""}</b><br>
+        Tarjeta: Vendido Q${sumTarjeta.toFixed(2)} / Recibido Q${recTarjeta.toFixed(2)} <b>${difTarjeta ? "<span style='color:red;'>("+(difTarjeta>0?"+":"")+difTarjeta.toFixed(2)+")</span>":""}</b><br>
+        Transferencia: Vendido Q${sumTransf.toFixed(2)} / Recibido Q${recTransf.toFixed(2)} <b>${difTransf ? "<span style='color:red;'>("+(difTransf>0?"+":"")+difTransf.toFixed(2)+")</span>":""}</b><br>
+        <hr>
+        <strong>Total recibido: Q${(recEfectivo+recTarjeta+recTransf).toFixed(2)}</strong>
+        <br><span style="color:${((recEfectivo+recTarjeta+recTransf)-totalVentas).toFixed(2)!=0 ? "red" : "green"};">Diferencia total: Q${((recEfectivo+recTarjeta+recTransf)-totalVentas).toFixed(2)}</span>
+        <br><em>Genera tu ticket y comparte por WhatsApp si deseas.</em>
+      `;
+      const cierreResultado = document.getElementById("cierreResultado");
+      cierreResultado.innerHTML = html;
+      cierreResultado.style.display = "block";
+      document.getElementById("descargarPDF").style.display = "inline-block";
+      document.getElementById("enviarWhatsApp").style.display = "inline-block";
+
+      // Guardar info de cierre para PDF/Whats
+      window.ticketCierre = {
+        fecha: new Date().toLocaleString(),
+        sumEfectivo, sumTarjeta, sumTransf,
+        recEfectivo, recTarjeta, recTransf,
+        difEfectivo, difTarjeta, difTransf,
+        totalVentas,
+        totalRecibido: recEfectivo + recTarjeta + recTransf,
+        totalDiferencia: (recEfectivo + recTarjeta + recTransf) - totalVentas
+      };
+    };
+
+    // --------------- GENERAR PDF DEL CIERRE ---------------
+    document.getElementById("descargarPDF").onclick = () => {
+      const doc = new window.jspdf.jsPDF();
+      const t = window.ticketCierre;
+      doc.setFontSize(15);
+      doc.text("TICKET DE CIERRE DE CAJA", 20, 20);
+      doc.setFontSize(11);
+      doc.text(`Fecha: ${t.fecha}`, 20, 28);
+      doc.text(`Total Ventas: Q${t.totalVentas.toFixed(2)}`, 20, 36);
+      doc.text(`Total Recibido: Q${t.totalRecibido.toFixed(2)}`, 20, 44);
+      doc.text(`Diferencia Total: Q${t.totalDiferencia.toFixed(2)}`, 20, 52);
+
+      doc.text("Desglose por método:", 20, 62);
+      doc.text(`Efectivo - Vendido: Q${t.sumEfectivo.toFixed(2)} / Recibido: Q${t.recEfectivo.toFixed(2)} (${t.difEfectivo>0?"+":""}${t.difEfectivo.toFixed(2)})`, 20, 70);
+      doc.text(`Tarjeta  - Vendido: Q${t.sumTarjeta.toFixed(2)} / Recibido: Q${t.recTarjeta.toFixed(2)} (${t.difTarjeta>0?"+":""}${t.difTarjeta.toFixed(2)})`, 20, 78);
+      doc.text(`Transfer - Vendido: Q${t.sumTransf.toFixed(2)} / Recibido: Q${t.recTransf.toFixed(2)} (${t.difTransf>0?"+":""}${t.difTransf.toFixed(2)})`, 20, 86);
+
+      doc.setFontSize(10);
+      doc.text("Mi Boutique Chic 💖", 20, 105);
+      doc.text("Guatemala 2025", 20, 111);
+      doc.save(`TicketCierre_${new Date().toLocaleDateString().replaceAll("/","-")}.pdf`);
+    };
+
+    // --------------- WHATSAPP API ---------------
+    document.getElementById("enviarWhatsApp").onclick = () => {
+      let numero = prompt("Ingresa el número de WhatsApp (solo 8 dígitos, se antepone +502):");
+      if (!numero) return;
+      numero = numero.replace(/\D/g,'');
+      if (numero.length!==8) {
+        alert("Número inválido. Debe ser de 8 dígitos.");
+        return;
+      }
+      const t = window.ticketCierre;
+      let mensaje = `*Ticket de Cierre de Caja*%0A`;
+      mensaje += `Fecha: ${t.fecha}%0A`;
+      mensaje += `Total Ventas: Q${t.totalVentas.toFixed(2)}%0A`;
+      mensaje += `Total Recibido: Q${t.totalRecibido.toFixed(2)}%0A`;
+      mensaje += `Diferencia Total: Q${t.totalDiferencia.toFixed(2)}%0A`;
+      mensaje += `%0A*Por método*:%0A`;
+      mensaje += `Efectivo - Vendido: Q${t.sumEfectivo.toFixed(2)} / Recibido: Q${t.recEfectivo.toFixed(2)} (${t.difEfectivo>0?"+":""}${t.difEfectivo.toFixed(2)})%0A`;
+      mensaje += `Tarjeta - Vendido: Q${t.sumTarjeta.toFixed(2)} / Recibido: Q${t.recTarjeta.toFixed(2)} (${t.difTarjeta>0?"+":""}${t.difTarjeta.toFixed(2)})%0A`;
+      mensaje += `Transferencia - Vendido: Q${t.sumTransf.toFixed(2)} / Recibido: Q${t.recTransf.toFixed(2)} (${t.difTransf>0?"+":""}${t.difTransf.toFixed(2)})%0A`;
+      mensaje += `%0A_Mi Boutique Chic 💖_`;
+      window.open(`https://wa.me/502${numero}?text=${mensaje}`);
+    };
+  </script>
+</body>
+</html>
