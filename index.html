@@ -1,1 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Abrir WhatsApp sin contacto</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 24px; max-width: 520px; margin: auto; }
+    label { display:block; margin-top:12px; }
+    input, textarea, button { width:100%; padding:10px; margin-top:6px; box-sizing:border-box; }
+    .row { display:flex; gap:8px; }
+    .small { width:140px; flex: 0 0 140px; }
+    .hint { font-size:0.9rem; color:#555; margin-top:6px; }
+    .error { color: #b00020; margin-top:8px; }
+    .actions { margin-top:12px; display:flex; gap:8px; }
+  </style>
+</head>
+<body>
+  <h2>Abrir chat de WhatsApp sin agregar contacto</h2>
 
+  <label>Código de país (sin +)</label>
+  <input id="country" class="small" value="34" />
+
+  <label>Número (sin espacios ni +)</label>
+  <input id="number" placeholder="Ej: 600123456" />
+
+  <label>Mensaje (opcional)</label>
+  <textarea id="message" rows="3" placeholder="Hola, quiero..."></textarea>
+
+  <div class="actions">
+    <button id="openBtn">Abrir en WhatsApp</button>
+    <button id="copyBtn" type="button">Copiar enlace</button>
+  </div>
+
+  <div class="hint">Ejemplo: país 34 + número 600123456 → 34600123456</div>
+  <div id="error" class="error" role="alert" aria-live="polite"></div>
+
+  <script>
+    const countryEl = document.getElementById('country');
+    const numberEl = document.getElementById('number');
+    const msgEl = document.getElementById('message');
+    const errEl = document.getElementById('error');
+    const openBtn = document.getElementById('openBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    function cleanDigits(s) {
+      return (s||'').toString().replace(/[^0-9]/g,'');
+    }
+
+    function buildUrl(fullNumber, text) {
+      // Usamos la forma api.whatsapp.com (funciona en móvil y escritorio)
+      let url = 'https://api.whatsapp.com/send?phone=' + fullNumber;
+      if (text && text.trim()!=='') {
+        url += '&text=' + encodeURIComponent(text);
+      }
+      return url;
+    }
+
+    function validateNumber(n) {
+      // longitud razonable entre 8 y 15 dígitos (incluyendo código país)
+      return /^[0-9]{8,15}$/.test(n);
+    }
+
+    openBtn.addEventListener('click', () => {
+      errEl.textContent = '';
+      const country = cleanDigits(countryEl.value) || '';
+      const number = cleanDigits(numberEl.value) || '';
+      const message = msgEl.value || '';
+
+      if (!country) { errEl.textContent = 'Ingresa el código de país (por ejemplo 34).'; return; }
+      if (!number) { errEl.textContent = 'Ingresa el número de teléfono.'; return; }
+
+      const full = country + number;
+      if (!validateNumber(full)) { errEl.textContent = 'Número inválido. Debe tener entre 8 y 15 dígitos en total.'; return; }
+
+      const url = buildUrl(full, message);
+      // redirige
+      window.location.href = url;
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      errEl.textContent = '';
+      const country = cleanDigits(countryEl.value) || '';
+      const number = cleanDigits(numberEl.value) || '';
+      const message = msgEl.value || '';
+      if (!country || !number) { errEl.textContent = 'Ingresa código de país y número para copiar enlace.'; return; }
+      const full = country + number;
+      if (!validateNumber(full)) { errEl.textContent = 'Número inválido para copiar.'; return; }
+      const url = buildUrl(full, message);
+      try {
+        await navigator.clipboard.writeText(url);
+        errEl.style.color = 'green';
+        errEl.textContent = 'Enlace copiado al portapapeles.';
+        setTimeout(()=>{ errEl.textContent=''; errEl.style.color = '#b00020'; }, 2500);
+      } catch (e) {
+        errEl.textContent = 'No se pudo copiar. Aquí está el enlace: ' + url;
+      }
+    });
+  </script>
+</body>
+</html>
