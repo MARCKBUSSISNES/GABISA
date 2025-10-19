@@ -3,37 +3,192 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Abrir WhatsApp sin contacto</title>
+  <title>Abrir WhatsApp sin agregar contacto</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 24px; max-width: 520px; margin: auto; }
-    label { display:block; margin-top:12px; }
-    input, textarea, button { width:100%; padding:10px; margin-top:6px; box-sizing:border-box; }
-    .row { display:flex; gap:8px; }
-    .small { width:140px; flex: 0 0 140px; }
-    .hint { font-size:0.9rem; color:#555; margin-top:6px; }
-    .error { color: #b00020; margin-top:8px; }
-    .actions { margin-top:12px; display:flex; gap:8px; }
+    :root {
+      --color-bg: #f4f7fb;
+      --color-card: #ffffff;
+      --color-primary: #25D366;
+      --color-primary-dark: #1DA851;
+      --color-text: #222;
+      --color-muted: #777;
+      --radius: 18px;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    body {
+      background: var(--color-bg);
+      font-family: 'Poppins', Arial, sans-serif;
+      color: var(--color-text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: var(--color-card);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      padding: 40px 36px 48px;
+      box-sizing: border-box;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: var(--color-primary-dark);
+    }
+
+    p.desc {
+      color: var(--color-muted);
+      margin-bottom: 28px;
+      font-size: 1rem;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      outline: none;
+      margin-bottom: 18px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37,211,102,0.25);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .small {
+      flex: 0 0 130px;
+    }
+
+    button {
+      display: inline-block;
+      border: none;
+      outline: none;
+      padding: 14px 20px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    #openBtn {
+      background: var(--color-primary);
+      color: #fff;
+      flex: 1;
+    }
+
+    #openBtn:hover {
+      background: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(37,211,102,0.3);
+    }
+
+    #copyBtn {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    #copyBtn:hover {
+      background: #d5d5d5;
+      transform: translateY(-1px);
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      margin-top: 8px;
+    }
+
+    .error {
+      color: #b00020;
+      margin-top: 10px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: var(--color-muted);
+    }
+
+    footer a {
+      color: var(--color-primary-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h2>Abrir chat de WhatsApp sin agregar contacto</h2>
+  <div class="card">
+    <h1>WhatsApp Direct</h1>
+    <p class="desc">Inicia un chat en WhatsApp sin agregar el contacto.</p>
 
-  <label>Código de país (sin +)</label>
-  <input id="country" class="small" value="34" />
+    <div class="row">
+      <div class="small">
+        <label>Código país</label>
+        <input id="country" value="34" />
+      </div>
+      <div style="flex:1">
+        <label>Número</label>
+        <input id="number" placeholder="Ej: 600123456" />
+      </div>
+    </div>
 
-  <label>Número (sin espacios ni +)</label>
-  <input id="number" placeholder="Ej: 600123456" />
+    <label>Mensaje (opcional)</label>
+    <textarea id="message" placeholder="Escribe tu mensaje aquí..."></textarea>
 
-  <label>Mensaje (opcional)</label>
-  <textarea id="message" rows="3" placeholder="Hola, quiero..."></textarea>
+    <div class="row">
+      <button id="openBtn">Abrir en WhatsApp</button>
+      <button id="copyBtn" type="button">Copiar enlace</button>
+    </div>
 
-  <div class="actions">
-    <button id="openBtn">Abrir en WhatsApp</button>
-    <button id="copyBtn" type="button">Copiar enlace</button>
+    <div id="error" class="error"></div>
+    <div class="hint">Ejemplo: país 34 + número 600123456 → 34600123456</div>
+
+    <footer>
+      Desarrollado por <a href="#">Juan Luis Ruiz Balcarcel</a>
+    </footer>
   </div>
-
-  <div class="hint">Ejemplo: país 34 + número 600123456 → 34600123456</div>
-  <div id="error" class="error" role="alert" aria-live="polite"></div>
 
   <script>
     const countryEl = document.getElementById('country');
@@ -48,7 +203,6 @@
     }
 
     function buildUrl(fullNumber, text) {
-      // Usamos la forma api.whatsapp.com (funciona en móvil y escritorio)
       let url = 'https://api.whatsapp.com/send?phone=' + fullNumber;
       if (text && text.trim()!=='') {
         url += '&text=' + encodeURIComponent(text);
@@ -57,43 +211,54 @@
     }
 
     function validateNumber(n) {
-      // longitud razonable entre 8 y 15 dígitos (incluyendo código país)
       return /^[0-9]{8,15}$/.test(n);
     }
 
     openBtn.addEventListener('click', () => {
       errEl.textContent = '';
-      const country = cleanDigits(countryEl.value) || '';
-      const number = cleanDigits(numberEl.value) || '';
-      const message = msgEl.value || '';
+      const country = cleanDigits(countryEl.value);
+      const number = cleanDigits(numberEl.value);
+      const message = msgEl.value;
 
-      if (!country) { errEl.textContent = 'Ingresa el código de país (por ejemplo 34).'; return; }
-      if (!number) { errEl.textContent = 'Ingresa el número de teléfono.'; return; }
+      if (!country || !number) {
+        errEl.textContent = 'Por favor ingresa el código de país y el número.';
+        return;
+      }
 
       const full = country + number;
-      if (!validateNumber(full)) { errEl.textContent = 'Número inválido. Debe tener entre 8 y 15 dígitos en total.'; return; }
+      if (!validateNumber(full)) {
+        errEl.textContent = 'Número inválido. Usa entre 8 y 15 dígitos.';
+        return;
+      }
 
       const url = buildUrl(full, message);
-      // redirige
       window.location.href = url;
     });
 
     copyBtn.addEventListener('click', async () => {
       errEl.textContent = '';
-      const country = cleanDigits(countryEl.value) || '';
-      const number = cleanDigits(numberEl.value) || '';
-      const message = msgEl.value || '';
-      if (!country || !number) { errEl.textContent = 'Ingresa código de país y número para copiar enlace.'; return; }
+      const country = cleanDigits(countryEl.value);
+      const number = cleanDigits(numberEl.value);
+      const message = msgEl.value;
+      if (!country || !number) {
+        errEl.textContent = 'Completa código de país y número antes de copiar.';
+        return;
+      }
+
       const full = country + number;
-      if (!validateNumber(full)) { errEl.textContent = 'Número inválido para copiar.'; return; }
+      if (!validateNumber(full)) {
+        errEl.textContent = 'Número inválido.';
+        return;
+      }
+
       const url = buildUrl(full, message);
       try {
         await navigator.clipboard.writeText(url);
         errEl.style.color = 'green';
-        errEl.textContent = 'Enlace copiado al portapapeles.';
+        errEl.textContent = '✅ Enlace copiado al portapapeles.';
         setTimeout(()=>{ errEl.textContent=''; errEl.style.color = '#b00020'; }, 2500);
-      } catch (e) {
-        errEl.textContent = 'No se pudo copiar. Aquí está el enlace: ' + url;
+      } catch {
+        errEl.textContent = 'No se pudo copiar. Enlace: ' + url;
       }
     });
   </script>
